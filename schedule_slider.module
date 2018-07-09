@@ -1,0 +1,36 @@
+<?php
+
+use Drupal\node\Entity\Node;
+
+/**
+ * @file
+ * Contains schedule_slider.module..
+ */
+
+
+
+/**
+ * Implements hook_cron().
+ */
+function schedule_slider_cron()
+{
+	$fecha_actual = date('Y-m-d');
+
+    $entity = \Drupal::entityQuery('node');
+    $entity->condition('type', 'page');
+    $entity->condition('status', '1');
+    $entity->condition('field_fecha', $fecha_actual,'<');
+
+    $nids = $entity->execute();
+    $existe = count($nids);
+    if ($existe>0) {
+      $nodes = \Drupal\node\Entity\Node::loadMultiple($nids);
+
+      foreach ($nodes as $key => $node) {
+          $node->status=0;
+          $node->save();
+      }
+      $cantidad_nodos = count($nids);
+      \Drupal::logger('schedule_slider')->notice('Se han despublicado '.$cantidad_nodos.' nodos');
+    }
+}
