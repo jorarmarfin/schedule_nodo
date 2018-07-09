@@ -17,7 +17,7 @@ function schedule_slider_cron()
 	$fecha_actual = date('Y-m-d');
 
     $entity = \Drupal::entityQuery('node');
-    $entity->condition('type', 'page');
+    $entity->condition('type', 'slider_de_portada');
     $entity->condition('status', '1');
     $entity->condition('field_fecha', $fecha_actual,'<');
 
